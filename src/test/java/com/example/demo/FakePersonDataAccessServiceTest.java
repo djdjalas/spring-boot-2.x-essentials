@@ -13,7 +13,7 @@ public class FakePersonDataAccessServiceTest {
   private FakePersonDataAccessService underTest;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     underTest = new FakePersonDataAccessService();
   }
 
@@ -54,7 +54,7 @@ public class FakePersonDataAccessServiceTest {
     Person personUpdate = new Person(idOne, "Jake Black", 33);
 
     // When Update
-    underTest.updatePerson(idOne, personUpdate);
+    assertThat(underTest.updatePerson(idOne, personUpdate)).isEqualTo(1);
 
     // Then when get person with idOne then should have name as James Bond > Jake Black
     assertThat(underTest.getPerson(idOne))
@@ -62,7 +62,7 @@ public class FakePersonDataAccessServiceTest {
         .hasValueSatisfying(personFromDb -> assertThat(personFromDb).isEqualToComparingFieldByField(personUpdate));
 
     // When Delete Jake Black
-    underTest.deletePerson(idOne);
+    assertThat(underTest.deletePerson(idOne)).isEqualTo(1);
 
     // When get personOne should be empty
     assertThat(underTest.getPerson(idOne)).isEmpty();
@@ -72,5 +72,30 @@ public class FakePersonDataAccessServiceTest {
         .hasSize(1)
         .usingFieldByFieldElementComparator()
         .containsExactlyInAnyOrder(personTwo);
+  }
+
+  @Test
+  public void willReturn0IfNoPersonFoundToDelete() {
+    // Given
+    UUID id = UUID.randomUUID();
+
+    // When
+    int deleteResult = underTest.deletePerson(id);
+
+    // Then
+    assertThat(deleteResult).isEqualTo(0);
+  }
+
+  @Test
+  public void willReturn0IfNoPersonFoundToUpdate() {
+    // Given
+    UUID id = UUID.randomUUID();
+    Person person = new Person(id, "James Not In Db", 33);
+
+    // When
+    int deleteResult = underTest.updatePerson(id, person);
+
+    // Then
+    assertThat(deleteResult).isEqualTo(0);
   }
 }

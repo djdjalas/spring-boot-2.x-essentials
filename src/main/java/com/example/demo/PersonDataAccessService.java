@@ -23,12 +23,12 @@ public class PersonDataAccessService implements PersonDao {
   }
 
   @Override
-  public void deletePerson(UUID id) {
-
+  public int deletePerson(UUID id) {
+    return 0;
   }
 
   @Override
-  public void updatePerson(UUID id, Person person) {
-
+  public int updatePerson(UUID id, Person person) {
+    return 0;
   }
 }
